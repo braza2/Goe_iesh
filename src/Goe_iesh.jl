@@ -23,20 +23,6 @@ include("get_forces.jl");
 include("propagation.jl");
 include("run_trajectory.jl");
 
-
-
-
-s = simulation_init()
-simulation_constructor_x_v!(s)
-simulation_constructor_nn!(s)
-simulation_constructor_x_300K!(s)
-simulation_constructor_energy(s)
-simulation_constructor_force(s)
-propagate_init!(s)
-
-
-
-
 multiple_trajectory()
 
 end
