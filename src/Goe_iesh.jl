@@ -2,6 +2,7 @@ module Goe_iesh
 
 
 curr_vers = "v.0.95"
+using DrWatson
 using LinearAlgebra
 using Random
 using StaticArrays
