@@ -27,7 +27,7 @@ function multiple_trajectory()
 	current_time = Dates.now()
     str_time = string(Dates.format(current_time, "yyyy-dd-mm_HH-MM-SS"))
     #filepath_run = filepath_parent*curr_vers*"\\"*str_time *"\\"
-    filepath_run = filepath_parent*curr_vers*"/"*str_time *"/"
+    filepath_run = datadir(curr_vers, str_time)#filepath_parent*curr_vers*"/"*str_time *"/"
 
     mkpath(filepath_run)
     Threads.@threads for traj in 1:numtraj
@@ -46,7 +46,7 @@ function multiple_trajectory()
 
 		#logging
         hdf5filename = "traj_"*string(traj)*".h5"
-        hdf5filepath = filepath_run*hdf5filename
+        hdf5filepath = joinpath(filepath_run, hdf5filename)
 		h5open(hdf5filepath, "w") do fid2
 			write(fid2, "x_no", s.storage_xno)
 			write(fid2, "v_no", s.storage_vno)

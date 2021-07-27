@@ -1,7 +1,7 @@
 module Goe_iesh
 
 
-curr_vers = "v.0.9"
+curr_vers = "v.0.95"
 using LinearAlgebra
 using Random
 using StaticArrays
