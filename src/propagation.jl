@@ -153,8 +153,6 @@ function simulate!(s::Simulation)
             s.ϕ[:, j] = view(s.Γ, :, s.surfp[j])
         end
 
-        surfp[1] = 1
-        phi[:, 1] = Gamma[:, 1]
         #Calculate nonadiabatic coupling matrix DM between adiabatic orbitals
         get_dm!(s::Simulation)
         # Get occupied (particle), unoccupied (hole) states corresponding to current surface specified by surfp
