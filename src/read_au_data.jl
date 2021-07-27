@@ -1,8 +1,6 @@
 #parent folder data where we will save the data
 #filepath_parent = "W:\\ALL\\Theory Group\\iesh\\data\\"
 #filepath_parent = "/mnt/MBPC11500/braza2/data_iesh/"
-filepath_parent = datadir("sim_results")
-
 
 #file path for initialisation files:
 #filename = "C:\\Users\\Belal\\.julia\\dev\\My_iesh.jl\\data\\surface_Au111.dat"

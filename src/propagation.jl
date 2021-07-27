@@ -24,13 +24,13 @@ function propagate_init!(s::Simulation) #check seems okay #everything good.
     s.ψ .= convert(Array{ComplexF64, 2}, view(s.Γ, :, s.surfp))
 
     #calculate initial forces
-    update_forces!(s)
+    update_forces!(s) #minus sign
     #fix position of the last layer of atoms
     s.F[399:530, :] .= 0.0
     s.v[399:530, :] .= 0.0
 
     #convert to Forces
-    s.F .= -s.F
+    s.F .= -s.F #get rid of minus sign.
 
     storage_init!(s)
 
@@ -120,6 +120,7 @@ end
 
 
 @inline @inbounds function update_forces!(s::Simulation) #check seems okay
+
     for j in 1:Ne
         s.F .= s.F .+ (s.dhdea[s.surfp[j], s.surfp[j]] .* (s.dhp_ion .- s.dhp_neutral) .+
         s.dhdv[s.surfp[j], s.surfp[j]] .* s.dhp_coup)
@@ -152,6 +153,8 @@ function simulate!(s::Simulation)
             s.ϕ[:, j] = view(s.Γ, :, s.surfp[j])
         end
 
+        surfp[1] = 1
+        phi[:, 1] = Gamma[:, 1]
         #Calculate nonadiabatic coupling matrix DM between adiabatic orbitals
         get_dm!(s::Simulation)
         # Get occupied (particle), unoccupied (hole) states corresponding to current surface specified by surfp
@@ -208,7 +211,7 @@ function simulate!(s::Simulation)
             s.storage_vau[:, n] = vec(s.v[3:398, :])
             s.storage_phi[:, n] = vec(s.ϕ)
         end
-        
+
         s.nf .= s.nf .+ one(Int64)
     end
     s.storage_e[5, :] = sum(s.storage_e[1:4, :], dims=1) .- sum(s.storage_e[1:4, 1])
