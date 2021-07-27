@@ -2,7 +2,7 @@ export nn_lattice!
 
 @inline @inbounds function nn_loop_if!(r,  nn_arr,  i::Integer,  j::Integer, rb, ss)
     mul!(rb, U_sa, r)
-    ss .= Integer(round(rb./g))
+    ss .= Integer(round.(rb./g))
     sint = Integer(ss[1] * 9 + ss[2] * 3 + ss[3]) #nice hack, it works, but why? figure & table  1, Begbie 1947
     if sint == 4
         nn_arr[i,  1] = j
