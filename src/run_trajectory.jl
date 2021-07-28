@@ -74,12 +74,12 @@ function multiple_trajectory()
 			write(fid2, "time steps", tsteps)
 			write(fid2, "number electrons", Ne)
 			write(fid2, "number of states", Ms)
-			if extensive_logging == true
-				write(fid2, "wavefunction", s.storage_psi)
-				write(fid2, "adiabatic states", s.storage_phi)
-				write(fid2, "x_au", s.storage_xau)
-				write(fid2, "v_au", s.storage_vau)
-			end
+			# if extensive_logging == true
+			# 	write(fid2, "wavefunction", s.storage_psi)
+			# 	write(fid2, "adiabatic states", s.storage_phi)
+			# 	write(fid2, "x_au", s.storage_xau)
+			# 	write(fid2, "v_au", s.storage_vau)
+			# end
 		end
 	end
 end
