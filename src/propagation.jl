@@ -101,11 +101,10 @@ end
 
     for t in 1:Ne
         for k in 1:Ne*(Ms + 1 - Ne)
-            #hoprand = rand(Float64, 3)
-            hoprand = collect([0.2, 0.4, 0.01])
+            hoprand = rand(Float64, 3)
             jp = Int(floor(hoprand[1]*Ne)) + 1
             jh = Int(floor(hoprand[2] * (Ms + 1 - Ne))) + 1
-            rtemp = exp(-(s.λ[s.surfh[jh]] - s.dhp_neutral[s.surfp[jp]])) / (kb * tsurf)
+            rtemp = exp(-(s.λ[s.surfh[jh]] - s.λ[s.surfp[jp]]) / (kb * tsurf))
             if hoprand[3] < rtemp
                 m = s.surfh[jh]
                 s.surfh[jh] = s.surfp[jp]
