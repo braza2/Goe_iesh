@@ -201,7 +201,7 @@ function simulate!(s::Simulation)
 
         s.storage_xno[1:3, n] = view(s.x, 1, :)
         s.storage_xno[4:6, n] = view(s.x, 2, :)
-        s.storage_vno[1:3, n] =view(s.x, 1, :)
+        s.storage_vno[1:3, n] =view(s.v, 1, :)
         s.storage_vno[4:6, n] = view(s.v, 2, :)#check seems okay
         if extensive_logging == 1
             s.storage_psi[:, n] = vec(s.ψ)
