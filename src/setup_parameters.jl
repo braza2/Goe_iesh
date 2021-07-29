@@ -21,9 +21,9 @@ global const hbar = 1.05457148e-34*1.0e-3*N_a*kjmol_seunit*1.0e15 #	# hbar [J*s]
 
 
 #Simulation parameters
-const global Ne = 20     #number of electrons
-const global Ms = 40    #number of orbitals
-const global numtraj = 100   #number of trajectories
+const global Ne = 40     #number of electrons
+const global Ms = 80    #number of orbitals
+const global numtraj = 200   #number of trajectories
 const global tsteps = 100000
 const global thop = 1   #number of timesteps between surface hops
 const global twrite = 5     #number of timesteps between data writing
@@ -42,7 +42,7 @@ const global tsurf = 300.0 #temperature of surface in Kelvin
 const global sim_time = tsteps * dt
 
 #random seed used for simulation
-Random.seed!(1234);
+Random.seed!(31102019);
 
 #parameters of surface etc.
 const global delta_E = 7.0 * ev_kjmol * kjmol_seunit

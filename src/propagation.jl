@@ -183,7 +183,7 @@ function simulate!(s::Simulation)
         #propagate nuclear motion
         propagate_nuclear!(s)
         #get adiabatic eigenvalues, eigenvectors
-        get_eigen_sim!(s)
+        get_eigen_sim!(s, n)
         # Get dH / d Ep matrices where Ep is parameter in Newns-Anderson Hamiltonian
         # (i.e. Ep = V or Ep = E_a = (EI-EN) )
         get_dhdea_dhdv_loop!(s)
