@@ -50,7 +50,7 @@ end
 end
 #---------------------------Au-O Coupling----------------------------------
 @inline function get_E_au_o_coup_loop!(x, V, i, delta_xo, cutoff_test,
-     bool_cutoff_test, s::Simulation)::Float64
+    bool_cutoff_test, s::Simulation)::Float64
     @views delta_xo = x[i+2, :] .- x[2, :]
     delta_xo[1] = delta_xo[1] - cell[1]*round(delta_xo[1]/cell[1])
     delta_xo[2] = delta_xo[2] - cell[2]*round(delta_xo[2]/cell[2])

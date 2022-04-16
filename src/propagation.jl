@@ -65,7 +65,7 @@ end
 end
 
 @inline function compute_eigen_H!(s::Simulation)
-    s.H .= Symmetric(h0 .+ vm .* s.hp[3] ./ sqrt_de)
+    s.H .= Symmetric(h0 .+ vm .* s.hp[3])
     s.H[1, 1] = s.H[1, 1] + s.hp[2] - s.hp[1]
     s.λ .= eigvals(s.H)
     s.Γ .= eigvecs(s.H)#check seems okay

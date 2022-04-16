@@ -13,7 +13,7 @@ global const N_a = 6.02214076e23 #avogadro constant
 
 #conversions
 global const ev_kjmol = N_a * ev *1.0e-3 #ev to kj/mol
-global const kjmol_seunit = 1.0e-4  #kj/mol to Dalton*angstrom^2/femtosecon^2
+global const kjmol_seunit = 1.0e-4  #kj/mol to Dalton*angstrom^2/femtosecon^2 -> 1kj/mol = 1e-4 Da*Ang^2/fs^2
 global const nm_to_daang = 1.0/amunit / 1.0e30 #N/m in dalton/angstrom
 #physical constants
 global const kb = 1.3806504e-23*1.0e-3*N_a*kjmol_seunit#	# boltzman constant [J/Kelvin] in Dalton*angstrom^2/femtosecond/Kelvin
@@ -23,8 +23,8 @@ global const hbar = 1.05457148e-34*1.0e-3*N_a*kjmol_seunit*1.0e15 #	# hbar [J*s]
 #Simulation parameters
 const global Ne = 40     #number of electrons
 const global Ms = 80    #number of orbitals
-const global numtraj = 200   #number of trajectories
-const global tsteps = 100000
+const global numtraj = 10000  #number of trajectories
+const global tsteps = 20000
 const global thop = 1   #number of timesteps between surface hops
 const global twrite = 5     #number of timesteps between data writing
 const global dt = 0.1  #time stepsize in Femtoseconds
@@ -33,19 +33,19 @@ const global dt = 0.1  #time stepsize in Femtoseconds
 # ev to kilojoule/mole to Dalton*angstrom^2/femtosecond^2
 
 const global e_trans_i = 0.05 * ev_kjmol * kjmol_seunit #translational energy in eV -> kilojoule/mole
-const global e_vib_i = 3.1  * ev_kjmol * kjmol_seunit #vibrational energy in eV-> kilojoule/mole
+const global e_vib_i = 0.00  * ev_kjmol * kjmol_seunit #vibrational energy in eV-> kilojoule/mole
 const global e_rot_i = 0.00  * ev_kjmol * kjmol_seunit #translational energy in eV-> kilojoule/mole
 
 const global r_no = 1.15077		# Initial bond length of NO
 const global phi_inc = 0.0 #incident angle in radians
-const global tsurf = 300.0 #temperature of surface in Kelvin
+const global tsurf = 0.0 #temperature of surface in Kelvin
 const global sim_time = tsteps * dt
 
 #random seed used for simulation
 Random.seed!(31102019);
 
 #parameters of surface etc.
-const global delta_E = 7.0 * ev_kjmol * kjmol_seunit
+const global delta_E = 7.0 *ev_kjmol *kjmol_seunit
 const global sqrt_de = sqrt(delta_E)
 
 #end simulation when scattered projectile reaches z_end
@@ -188,35 +188,28 @@ Burkey, Ronald S. / Cantrell, C. D.
 Discretization in the quasi-continuum
 1984-04
 """
-function burkey_cantrell()
+function gaussian_quadrature()
     e_diabat = zeros(Float64, Ms) #Diabat energies
     h0 = zeros(Float64, Ms+1, Ms+1) #component of diabatic hamiltonian matrix
     vm = zeros(Float64, Ms+1, Ms+1)#component of diabatic hamiltonian matrix
-    gauss = zeros(Float64, Int(Ms/2), Int(Ms/2)) #recursion matrix to obtain continuum states
-    for j in 1:(Int(Ms/2)-1)
-        gauss[j, j+1] = Float64(j)/sqrt((2.0*Float64(j) + 1.0)*(2.0*Float64(j) - 1.0))   #equation not trivially reproducable
-        gauss[j+1, j] = gauss[j, j+1]
-    end
 
-    eigvals_gauss = eigvals(gauss)
-    eigvecs_gauss = eigvecs(gauss)
+    nodes1, weights1 = gausslegendre(Int(Ms/2));
+    delta_E2 = delta_E/2.0
+    nodes1 = delta_E2/2.0*nodes1 .+ delta_E2/2.0
+    nodes2 = nodes1 .- delta_E2
+    nodes = vcat([0.0],nodes2, nodes1)
+    weights = vcat([0.0], delta_E/4.0 * weights1, delta_E/4.0 * weights1)
 
-    for j in 2:(Int(Ms/2) + 1)
-        h0[j, j] = delta_E/4.0*eigvals_gauss[j-1] - delta_E/4.0     #???
-         h0[j+Int(Ms/2), j+Int(Ms/2)] = delta_E/4.0*eigvals_gauss[j-1] + delta_E/4.0
-        e_diabat[j-1] = h0[j, j]
-        e_diabat[j + Int(Ms/2) - 1] = h0[j+Int(Ms/2), j+Int(Ms/2)]
-    end
 
-    vm[1, 2:Int(Ms/2) + 1] = @. sqrt(delta_E/4.0 * (2.0*eigvecs_gauss[1, :]^2))  #??? why sqrt? where is weight function?
-    vm[2:Int(Ms/2) + 1, 1] = @. sqrt(delta_E/4.0 * (2.0*eigvecs_gauss[1, :]^2))
-    vm[1, (2 + Int(Ms/2)):(Ms + 1)] = @. sqrt(delta_E/4.0 * (2.0*eigvecs_gauss[1, :]^2))
-    vm[(2 + Int(Ms/2)):(Ms + 1), 1] = @. sqrt(delta_E/4.0 * (2.0*eigvecs_gauss[1, :]^2))
+    h0[diagind(h0)] .= nodes
+    e_diabat .= nodes[2:end]
 
+    vm[1, :] .= weights
+    vm[:, 1] .= vm[1, :]
     return h0, e_diabat, vm
 end
 
-h0_temp, e_diabat_temp, vm_temp = burkey_cantrell()
+h0_temp, e_diabat_temp, vm_temp = gaussian_quadrature()
 global const h0 = h0_temp
 global const e_diabat = SVector{Ms, Float64}(e_diabat_temp)
 global const vm = vm_temp
